@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	
+	<http:request-config name="HTTP_Request_configuration" doc:name="HTTP Request configuration" doc:id="52284440-b27c-49fb-8b41-b4a88c0e1161" >
+		<http:request-connection host="indigo-services.us-e2.cloudhub.io" port="80" />
+	</http:request-config>
+	<flow name="indigoJetsFlow" doc:id="4f4ed2e8-287b-45d2-83ad-f7ea642b3651" >
+		<logger level="INFO" doc:name="Logger" doc:id="f39c3ad5-fb71-4342-b5df-be096ca2c54f" message="Flow started..........................#[attributes.queryParams]"/>
+		<http:request method="GET" doc:name="Request" doc:id="6246b804-df35-44a7-910e-68b7a8aad764" config-ref="HTTP_Request_configuration" path="/api/getFlights">
+			<http:query-params ><![CDATA[#[output application/java
+---
+{
+	from : attributes.queryParams.source,
+	to : attributes.queryParams.destination,
+	depatureDate : attributes.queryParams.doj
+}]]]></http:query-params>
+		</http:request>
+		<logger level="INFO" doc:name="Logger" doc:id="6adaccdc-8f22-4322-8ed3-52966c77d263" message="response..................#[payload]"/>
+		<error-handler >
+			<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="23d350b2-1792-4120-be15-ec1ede120457" >
+				<ee:transform doc:name="Transform Message" doc:id="bf5050dd-e8fc-4fdd-8963-763b28300223" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	StatusCode:500,
+	Meessage:"Server can't be reached"
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+				<logger level="INFO" doc:name="Logger" doc:id="6e77fe0e-9162-471b-9b4d-def987f5ca6e" />
+			</on-error-propagate>
+		</error-handler>
+	</flow>
+</mule>
