@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<mule xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd ">
+<mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd ">
     <apikit:config name="indigoairlinesapi-config" api="indigoairlinesapi.raml" outboundHeadersMapName="outboundHeaders" httpStatusVarName="httpStatus" />
-    <http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="51d34754-efd1-4045-8fd0-5711c581e39b" >
-		<http:listener-connection host="0.0.0.0" port="8081" />
-	</http:listener-config>
-	<flow name="indigoairlinesapi-main">
+    <http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="51d34754-efd1-4045-8fd0-5711c581e39b">
+        <http:listener-connection host="0.0.0.0" port="8081" />
+    </http:listener-config>
+    <flow name="indigoairlinesapi-main">
         <http:listener config-ref="HTTP_Listener_config" path="indigo/api/*">
             <http:response statusCode="#[vars.httpStatus default 200]">
                 <http:headers><![CDATA[#[vars.outboundHeaders default {}]]]></http:headers>
@@ -97,8 +97,14 @@ output application/json
         </error-handler>
     </flow>
     <flow name="get:\indigoJets:indigoairlinesapi-config">
-		<logger level="INFO" doc:name="Logger" doc:id="8f6b5ac9-f408-47c5-a1b0-1467bc624394" message="Request received..................#[attributes.queryParams]"/>
-		<flow-ref doc:name="indigoJetsFlow" doc:id="65e14f4a-3790-4110-87cf-2e3928be8a3a" name="indigoJetsFlow"/>
-		<logger level="INFO" doc:name="Logger" doc:id="95926266-9cca-4677-9fae-c1f9ac7fdd38" message="Final response..............#[payload]"/>
+        <logger level="INFO" doc:name="Logger" doc:id="8f6b5ac9-f408-47c5-a1b0-1467bc624394" message="Request received..................#[attributes.queryParams]" />
+        <flow-ref doc:name="indigoJetsFlow" doc:id="65e14f4a-3790-4110-87cf-2e3928be8a3a" name="indigoJetsFlow" />
+        <logger level="INFO" doc:name="Logger" doc:id="95926266-9cca-4677-9fae-c1f9ac7fdd38" message="Final response..............#[payload]" />
+    </flow>
+    
+      <flow name="get:\indigoJets\(source)\(destination)\(doj):indigoairlinesapi-config">
+        <logger level="INFO" doc:name="Logger" doc:id="23d4a7a7-d10a-40bf-b0bc-5918534bec08" message="Request received by IndigoJets UriParams .................#[attributes.uriParams]" />
+        <flow-ref doc:name="indigoJetsByUriParamsFlow" doc:id="5adc5fc8-6c17-48e4-8a05-7858758cb9bb" name="indigoJetsByUriParamsFlow" />
+        <logger level="INFO" doc:name="Logger" doc:id="e724075e-361c-4207-97e5-5450beda1fa1" message="Final response..............#[payload]" />
     </flow>
 </mule>

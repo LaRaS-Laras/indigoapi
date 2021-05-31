@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd">
+	<flow name="indigoJetsByUriParamsFlow" doc:id="15e7add8-b232-44dd-9a89-d4362a2db182" >
+		<logger level="INFO" doc:name="Logger" doc:id="dd89f3f9-3949-4b3a-88e1-773a486f750f" message="Flow started IndigoJets UriParams ...........................#[attributes.uriParams]"/>
+		<http:request method="GET" doc:name="Request" doc:id="de8beb54-6ffe-425c-878f-53d6e3aa3453" config-ref="HTTP_Request_configuration" path="/api/getFlights">
+			<http:query-params ><![CDATA[#[output application/java
+---
+{
+	from : attributes.uriParams.source,
+	to : attributes.uriParams.destination,
+	depatureDate : attributes.uriParams.doj
+}]]]></http:query-params>
+		</http:request>
+		<logger level="INFO" doc:name="Logger" doc:id="47670de4-826d-4618-b0a6-a5ede9bec1dd" message="response from IndigoJets By UriParams..................#[payload]"/>
+		<error-handler >
+			<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="3bb53fdd-1600-42f9-b6f0-0ed9d19be245" >
+				<ee:transform doc:name="Transform Message" doc:id="5604e1be-c3f5-4c83-9fee-7dd18f67bfc1" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	StatusCode:500,
+	Meessage:"Server can't be reached"
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+				<logger level="INFO" doc:name="Logger" doc:id="f5c57bda-3c95-4a7e-8c74-bfc4b0622080" />
+			</on-error-propagate>
+		</error-handler>
+	</flow>
+</mule>
