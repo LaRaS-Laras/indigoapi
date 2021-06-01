@@ -10,7 +10,7 @@ pipeline {
 		stage('Deploy Application into cloudhub')
 			{
 				steps{
-						bat'mvn clean package deploy -DmuleDeploy'
+						bat"mvn clean package deploy -DmuleDeploy"
 					 }
 			} 
 		   }	
