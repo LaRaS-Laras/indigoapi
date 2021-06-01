@@ -30,6 +30,20 @@
 				<version>${mule.maven.plugin.version}</version>
 				<extensions>true</extensions>
 				<configuration>
+				
+						 <cloudHubDeployment>
+					      <uri>https://anypoint.mulesoft.com</uri>
+					       <username>LaRaS1</username>
+					      <password>Laras007@1</password>
+					      <environment>DEV</environment>
+					      <applicationName>IndigoAirlinesApi-cloudhub</applicationName>
+					      <muleVersion>4.3.0</muleVersion>					     					  					     
+					      <region>${region}</region>
+					      <workers>1</workers>
+					      <workerType>0.1v</workerType>
+					     
+					    </cloudHubDeployment>
+				
 				<classifier>mule-application</classifier>
                 </configuration>
 			</plugin>
