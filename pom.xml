@@ -40,8 +40,8 @@
 					      <muleVersion>4.3.0</muleVersion>					     					  					     
 					      <region>${region}</region>
 					      <workers>1</workers>
-					      <workerType>Micro</workerType>
-					     
+					      <workerType>MICRO</workerType>
+					      <objectStoreV2>TRUE</objectStoreV2>
 					    </cloudHubDeployment>
 				
 				<classifier>mule-application</classifier>
